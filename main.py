@@ -49,11 +49,11 @@ def generate_image(prompt: str, negative_prompt: str = None, **kwargs) -> 'PIL.I
 
 if __name__ == "__main__":
     """Generate a full image!"""
-    test_prompt = "a portrait of a blond woman"
+    test_prompt = "a portrait of a ginger haired woman, middle aged, glasses, sitting at a desk, large window in background, summer, books in a stack"
     test_negative = "blurry, low quality"
     
     image = generate_image(test_prompt, test_negative)
     
     # Save the result
-    image.save("my_modular_dragon.png")
-    print("\n🎉 SUCCESS! Your modular SDXL dragon saved as 'my_modular_dragon.png'")
+    image.save("core_output.png")
+    print("\n🎉 SUCCESS! Your image saved as 'core_output.png'")

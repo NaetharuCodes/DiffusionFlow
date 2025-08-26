@@ -8,7 +8,7 @@ import torch
 from src import config
 
 
-def create_noise(pipeline_components, height=None, width=None, seed=None, **kwargs):
+def create_noise(pipeline_components, height=None, width=None, seed=None, num_steps=None, **kwargs):
     """
     Generate initial latent noise for SDXL diffusion process.
     
@@ -17,6 +17,7 @@ def create_noise(pipeline_components, height=None, width=None, seed=None, **kwar
         height: Image height in pixels (default: config default)
         width: Image width in pixels (default: config default) 
         seed: Random seed for reproducible generation (default: random)
+        num_steps: Number of denoising steps (needed for scheduler setup)
         **kwargs: Additional parameters (ignored for noise generation)
     
     Returns:
@@ -27,8 +28,15 @@ def create_noise(pipeline_components, height=None, width=None, seed=None, **kwar
         height = config.DEFAULT_HEIGHT
     if width is None:
         width = config.DEFAULT_WIDTH
+    if num_steps is None:
+        num_steps = config.DEFAULT_STEPS
     
     device = pipeline_components['device']
+    scheduler = pipeline_components['scheduler']
+    
+    # CRITICAL: Set scheduler timesteps BEFORE using init_noise_sigma
+    # This ensures the scheduler is in the correct state
+    scheduler.set_timesteps(num_steps)
     
     # SDXL latents are 8x smaller than pixel dimensions
     latent_height = height // 8
@@ -58,13 +66,11 @@ def create_noise(pipeline_components, height=None, width=None, seed=None, **kwar
     
     print(f"Initial noise range: [{latents.min():.3f}, {latents.max():.3f}]")
 
-    scheduler = pipeline_components['scheduler']
+    # Scale by scheduler's init_noise_sigma (now scheduler is in correct state)
     latents = latents * scheduler.init_noise_sigma
-    scheduler.set_timesteps(25) 
     print(f"Scaled noise range: [{latents.min():.3f}, {latents.max():.3f}]")
 
     print(f"Scheduler type: {type(scheduler)}")
-
     print(f"Scheduler init_noise_sigma: {scheduler.init_noise_sigma}")
     
     return latents

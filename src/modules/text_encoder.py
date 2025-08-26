@@ -75,6 +75,7 @@ def encode_prompts(pipeline_components, positive_prompt, negative_prompt=None,
     target_size = (1024, 1024)
     time_ids = torch.tensor([list(original_size + crops_coords_top_left + target_size)], device=device, dtype=torch.float16)
     print(f"Text embeddings ready: {positive_embeds.shape}")
+    print(f"time_ids values: {time_ids}") 
 
     print(f"Final positive embeds shape: {positive_embeds.shape}")
    
