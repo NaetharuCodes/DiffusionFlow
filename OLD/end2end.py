@@ -21,6 +21,13 @@ generator = torch.Generator(device=device).manual_seed(42)
 latents = torch.randn(1, 4, 128, 128, generator=generator, device=device, dtype=torch.float16)
 print(f"Initial noise range: [{latents.min():.3f}, {latents.max():.3f}]")
 
+print(f"Initial noise shape: {latents.shape}")
+print(f"Initial noise stats - mean: {latents.mean():.4f}, std: {latents.std():.4f}")
+print(f"Initial noise range: [{latents.min():.4f}, {latents.max():.4f}]")
+
+latents = latents * pipe.scheduler.init_noise_sigma
+print(f"Scaled initial noise by {pipe.scheduler.init_noise_sigma}")
+
 # Step 2: Encode prompts
 print("\n2. Encoding text prompts...")
 positive_prompt = "cinematic portrait of a man, professional lighting, high quality, detailed"
