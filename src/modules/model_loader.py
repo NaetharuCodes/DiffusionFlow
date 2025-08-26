@@ -36,7 +36,11 @@ def load_model(model_path: str = None, device: str = None) -> Dict[str, Any]:
         torch_dtype=torch.float16,
         use_safetensors=True
     )
-    
+
+    print(f"UNet config: {pipe.unet.config}")
+    print(f"UNet input channels: {pipe.unet.in_channels}")
+    print(f"UNet sample size: {pipe.unet.sample_size}")
+        
     # Move to target device
     pipe = pipe.to(device)
     

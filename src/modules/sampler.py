@@ -56,7 +56,16 @@ def denoise(pipeline_components, latents, text_embeddings, num_steps=None,
         # Combine embeddings for classifier-free guidance (negative first, then positive)
         text_embeddings_combined = torch.cat([negative_embeds, positive_embeds])
         add_text_embeds = torch.cat([pooled_negative, pooled_positive])
-        add_time_ids = torch.cat([time_ids, time_ids])
+        add_time_ids = time_ids.repeat(2, 1)
+
+        # ADD THESE LINES HERE:
+        print(f"\n=== UNet Input Debug ===")
+        print(f"latent_model_input shape: {latent_model_input.shape}")
+        print(f"text_embeddings_combined shape: {text_embeddings_combined.shape}")
+        print(f"add_text_embeds shape: {add_text_embeds.shape}")
+        print(f"add_time_ids shape: {add_time_ids.shape}")
+        print(f"timestep t: {t}")
+        print(f"========================\n")
         
         # Predict the noise with UNet
         with torch.no_grad():

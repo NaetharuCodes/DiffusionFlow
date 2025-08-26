@@ -57,5 +57,14 @@ def create_noise(pipeline_components, height=None, width=None, seed=None, **kwar
     )
     
     print(f"Initial noise range: [{latents.min():.3f}, {latents.max():.3f}]")
+
+    scheduler = pipeline_components['scheduler']
+    latents = latents * scheduler.init_noise_sigma
+    scheduler.set_timesteps(25) 
+    print(f"Scaled noise range: [{latents.min():.3f}, {latents.max():.3f}]")
+
+    print(f"Scheduler type: {type(scheduler)}")
+
+    print(f"Scheduler init_noise_sigma: {scheduler.init_noise_sigma}")
     
     return latents
